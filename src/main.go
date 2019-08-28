@@ -3,9 +3,7 @@ package main
 import (
     "fmt"
     "io"
-    // "io/ioutil"
     "net/http"
-    // "mime/multipart"
     "os"
     "./ris"
     "encoding/json"

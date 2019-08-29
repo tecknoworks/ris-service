@@ -7,6 +7,7 @@ import (
     "os"
     "./ris"
     "encoding/json"
+    "github.com/go-http-utils/logger"
 )
 
 const (
@@ -71,23 +72,23 @@ func getVideoFrame(videoId string, offset string) {
     defer out.Close()
 
     // Write the body to file
-    n, err := io.Copy(out, resp.Body)
+    _, err = io.Copy(out, resp.Body)
 
     if err != nil {
 		fmt.Println("Error while downloading")
 		return
 	}
-
-	fmt.Println(n, "bytes downloaded.")
 }
 
 
 func setupRoutes() {
-    http.HandleFunc("/ris", risHandler)
-    http.ListenAndServe(":3006", nil)
+    mux := http.NewServeMux()
+    mux.HandleFunc("/ris", risHandler)
+    http.ListenAndServe(":3006", logger.Handler(mux, os.Stdout, logger.DevLoggerType))
 }
 
 func main() {
     CreateDirIfNotExist(imagesFolder)
+    fmt.Println("ris-service is listening on port 3006.")
     setupRoutes()
 }

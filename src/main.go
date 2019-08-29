@@ -8,6 +8,20 @@ import (
     "./ris"
     "encoding/json"
 )
+
+const (
+    imagesFolder = "./images"
+)
+
+func CreateDirIfNotExist(dir string) {
+      if _, err := os.Stat(dir); os.IsNotExist(err) {
+              err = os.MkdirAll(dir, 0755)
+              if err != nil {
+                      panic(err)
+              }
+      }
+}
+
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
     (*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
@@ -23,7 +37,7 @@ func risHandler(w http.ResponseWriter, r *http.Request) {
     videoId:= r.URL.Query()["videoId"][0]
     offset := r.URL.Query()["offset"][0]
     getVideoFrame(videoId, offset)
-    result:=ris.ImgFromFile("./images/frame.jpg")
+    result:=ris.ImgFromFile(imagesFolder+"/videoframe.jpg")
     encodedResult, err := json.Marshal(result)
     if  err!=nil { 
         return  
@@ -50,7 +64,7 @@ func getVideoFrame(videoId string, offset string) {
     defer resp.Body.Close()
 
     // Create the file
-    out, err := os.Create("./images/frame.jpg")
+    out, err := os.Create(imagesFolder+"/videoframe.jpg")
     if err != nil {
         return
     }
@@ -74,6 +88,6 @@ func setupRoutes() {
 }
 
 func main() {
-    fmt.Println("Hello World")
+    CreateDirIfNotExist(imagesFolder)
     setupRoutes()
 }

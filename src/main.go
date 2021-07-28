@@ -12,6 +12,7 @@ import (
 
 const (
     imagesFolder = "./images"
+    videoServiceUrl = "http://video-service:3003/videos"
 )
 
 func CreateDirIfNotExist(dir string) {
@@ -48,7 +49,7 @@ func risHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getVideoFrame(videoId string, offset string) {
-    req, _ := http.NewRequest("GET", "http://localhost:3003/videos/frame", nil)
+    req, _ := http.NewRequest("GET", videoServiceUrl + "/frame", nil)
 
 	q := req.URL.Query()
 	q.Add("videoId", videoId)
